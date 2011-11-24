@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html>
+  <title>Web Worker: Fibonacci calculation</title>
+  <body>
+	<h1>Web Worker: Fibonacci calculation</h1>
+  <div id="result"></div>
+
+  <script>
+    var worker = new Worker("fibonacci.js");
+    worker.onmessage = function(event) {
+      document.getElementById("result").textContent = event.data;
+      console.log("Got: " + event.data + "\n");
+    };
+
+    worker.onerror = function(error) {
+      console.log("Worker error: " + error.message + "\n");
+      throw error;
+    };
+
+    worker.postMessage("5");
+
+  </script>
+  </body>
+</html>

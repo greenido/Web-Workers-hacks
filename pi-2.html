@@ -1,0 +1,104 @@
+<html>
+  <head>
+  </head>
+  <style>
+    #progress_bar {
+      margin: 10px 0;
+      padding: 8px;
+      border: 1px solid #000;
+      border-radius: 10px;
+      font-size: 120%;
+      clear: both;
+      opacity: 0.9;
+      -moz-transition: opacity 1s linear;
+      -o-transition: opacity 1s linear;
+      -webkit-transition: opacity 1s linear;
+    }
+    #progress_bar.loading {
+      opacity: 1.0;
+    }
+    #pro-percent {
+      background-color: yellow;
+      height: auto;
+      width: 0;
+    }
+  </style>
+  <body>
+    <h1>Calculating Pi Examples</h1>
+
+    <input type="button" onclick="Calculate()" value="Calculate Without Web Workers" />
+    <h2>Without Workers</h2>
+    <div id="result-without"></div>
+    <div id='status'>
+
+    </div>
+    <div id="progress_bar">
+      <div id="pro-percent" class="pro-style">0%</div>
+    </div>
+
+    <h2>With Workers</h2>
+
+
+    <div id='exec-time'></div>
+
+    <footer>
+
+
+      <a href="http://plus.ly/greenido">+Ido Green</a></footer>
+
+    <script>
+      function updateProgress(evt) {
+        // evt hold our loop counter
+        if (evt) {
+          var percentLoaded = Math.round((evt / c) * 100);
+          // Increase the progress bar length.
+          if (percentLoaded < 100) {
+            progress.style.width = percentLoaded + '%';
+            progress.textContent = percentLoaded + '%';
+            // progress.class = progress.class;
+          }
+        }
+      }
+
+      var c=0;
+      var progress = document.getElementById('pro-percent');
+      var start;
+      var i=0;
+      function Calculate() {
+        // Reset progress indicator 
+        progress.style.width = '0%';
+        progress.textContent = '0%';
+        start = new Date().getTime();
+        c = prompt("Enter number of cycles:","120");
+        if ( c > 0) {
+          var Pi = 0;
+          var n = 1;
+
+          for (i = 0; i <= c; i++) {
+            Pi = Pi+ (4/n) - (4 / (n+2));
+            n = n + 4;
+
+            // updateProgress(i);
+            window.setInterval(function() {updateProgress(' + i + ')}, 1000);
+            document.getElementById('status').textContent += " | " + i; // TODO put a progess bar
+            if (document.getElementById('status').textContent.length > 200) {
+              document.getElementById('status').textContent = "";
+            }		
+          }
+          document.getElementById('result-without').textContent = Pi;
+        }
+        else {
+          alert("Canceled or Error in input: Input must be positive.");
+        }
+        clearTimeout;
+        var end = new Date().getTime();
+        var time = end - start;
+        progress.textContent = '100%';
+        progress.style.width = '100%';
+        document.getElementById('exec-time').textContent = 
+          ' Execution time: ' + time +" Milliseconds";
+
+      }
+    </script>
+  </body>
+</html>

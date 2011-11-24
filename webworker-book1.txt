@@ -1,0 +1,29 @@
+== HTML5 - Web Workers In Work ==
+
+Author Name <idog@google.com>
+v1.0, Fri Nov  4 14:50:56 PDT 2011
+
+Table of Contents
+Copyright
+Preface
+Ch. 1. Short History
+Ch. 2. How Can We Use Web Workers?
+Ch. 3. Dedicated Workers 
+Ch. 4. Shared Wrokers
+Ch. 5. Debug Your Workers
+
+
+Appx. 
+A. Restrictions with Local Access
+
+Due to Google Chrome’s security restrictions, workers will not run locally (e.g. from file://) in the latest versions of the browser. Instead, they fail silently! To run your app from the file:// scheme, run Chrome with the --allow-file-access-from-files flag set. It is not recommended to run your primary browser with this flag set. It should only be used for testing purposes and not regular browsing.
+
+B. Same Origin Considerations
+Worker scripts must be external files with the same scheme as their calling page. Thus, you cannot load a script from a data: URL or javascript: URL, and an https: page cannot start worker scripts that begin with http: URLs
+
+
+Colophon
+
+
+
+

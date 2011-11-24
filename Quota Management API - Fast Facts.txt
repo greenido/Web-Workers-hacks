@@ -1,0 +1,23 @@
+Quota Management API : Fast Facts
+
+The API is described in WebIDL here: https://groups.google.com/a/chromium.org/group/chromium-html5/msg/5261d24266ba4366?pli=1 
+On HTML5 storage, there’s a notion of TEMPORARY storage and PERSISTENT storage.
+For TEMPORARY storage, it is shared between all applications and websites run in the browser.
+TEMPORARY storage has a default quota of 50% of available disk. (50GB => 25GB)  [To be more specific, TEMP quota is calucalated by (remaining disk space + TEMP storage space) * 50%.  Therefore if apps are using 25GB TEMP storage in total and the current remaining disk space is 25GB that’s already full.
+Each application has a limitation to have 20% of available TEMPORARY storage quota. (not restricted to 1GB anymore)
+When TEMPORARY storage quota is exceeded, all the data (incl. AppCache, IndexedDB, WebSQL, File System API) stored for oldest used origin gets deleted.
+When app’s TEMPORARY storage quota (20% of pool) is exceeded, an error will be thrown.
+Requesting quota against TEMPORARY storage doesn’t do anything.
+Requesting quota for TEMPORARY storage using requestFileSystem doesn’t actually allocate / change quota.
+For PERSISTENT storage, it is only allocated for File System API when explicitly requested by requestQuota of Quota API.
+This allocation is only for File System API and there’s no such thing like PERSISTENT storage on IndexedDB, WebSQL DB or AppCache.
+unlimitedStorage on manifest.json of Chrome Web App has been brought as a temporary solution for apps to work without Quota API. So, there’s no guarantee that Chrome will support this feature forever.
+
+
+
+
+
+when done..... 
+post to updates.h5r
+update chromestatus with this news
+and mention on chromium-html5

@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Shared Web Workers: Show And Tale</title>
+  </head>
+  <body>
+
+    <h1>Shared Web Workers: Show And Tale</h1>
+    <article>
+      To create a shared web worker, you pass a JavaScript file name to a new instance of the SharedWorker object:
+      <br/>var worker = new SharedWorker("jsworker.js");
+      <br/>
+      <output id="result"></output>
+    </article>
+    <script>
+      var worker = new SharedWorker('sharedWorker1.js');
+      worker.port.addEventListener("message", function(e) {  
+        document.getElementById('result').textContent += " | " + e.data;  
+		console.log ("msg we got back: "+ JSON.stringify(e));
+      }, false);  
+	  worker.onerror = function(e){
+	    throw new Error(e.message + " (" + e.filename + ":" + e.lineno + ")");
+	  };
+	
+      worker.port.start();  
+      // post a message to the shared web worker  
+      console.log("Calling the worker from script 1");
+      worker.port.postMessage("script-1");
+
+    </script>
+
+    <script>
+      console.log("Calling the worker from script 2");
+      worker.port.postMessage("script-2");
+    </script>
+  </body>
+</html>
