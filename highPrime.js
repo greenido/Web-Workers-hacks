@@ -1,12 +1,21 @@
-//
-// A simple way to find prime numbers
-//
-var n = 1;
-search: while (true) {
-  n += 1;
-  for (var i = 2; i <= Math.sqrt(n); i += 1)
-    if (n % i == 0)
-     continue search;
-  // found a prime!
-  postMessage(n);
-}
+<script>
+     function status(msg) {
+       $("#status").append(msg);
+     }
+     
+     // Creating the BlobBuilder and adding our web worker code to it.
+     var bb = new (window.BlobBuilder || window.WebKitBlobBuilder)();
+	 bb.append(document.querySelector('#worker1').textContent);
+
+     // Creates a simple URL string which can be used to reference data stored 
+	 // in a DOM File / Blob object.
+     // Psss... In Chrome, there's a nice page to view all of the created 
+	 // blob URLs: chrome://blob-internals/
+     var worker = new Worker(window.webkitURL.createObjectURL(bb.getBlob()));
+     worker.onmessage = function(e) {
+       // Let's pass the information we got from the worker and print it on the page
+       status(e.data);
+     }
+     worker.postMessage(); // Start the worker.
+</script>
+

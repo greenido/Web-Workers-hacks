@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Web Workers: Pull Tweets and save them in local storage</title>
+    <meta name="author" content="Ido Green">
+    <!-- 
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    -->
+    <script src="http://code.jquery.com/jquery.min.js" ></script>
+    <style>
+      #result {
+        background: lightblue;
+        padding: 20px;
+        border-radius: 18px;
+      }
+      #tweets {
+        background: yellow;
+        border-radius: 28px;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>Web Workers: Pull Tweets and save them in local storage</h1>
+    <article>In this example we used a Web Worker in order to read tweets and save them using localStorage. We will save just the new tweets every time.<br/>
+      Let’s have a look how it's working internally by opening Chrome DevTool on the Console tab. <br/>
+      For more info: http://www.w3.org/TR/workers/
+      <br/>
+      <div id="result"></div>
+      <div id="tweets"></div>
+    </article>
+    <script>
+      var worker;
+	
+      /* console.log("WebWorker: Starting");
+      worker = new Worker("Worker-pull.js");
+      worker.addEventListener("message", function(e) {  
+        var curTime = new Date();
+        // here we will show the messages between our page and the Worker
+        $('#result').append( curTime + " ) " + e.data + "<br/>"); 
+        var source = e.data[0].source;
+        // in case we have some data from Twitter - let's show it to the user
+        if (typeof source != 'undefined' ) {
+          $("#tweets").append("<ul>");
+          for (var i=0; i < 10; i++) {
+            $("#tweets").append("<li>" + e.data[i].text + " (" +
+              e.data[i].created_at + ")</li>"); //data.source  created_at
+          }
+          $("#tweets").append("</ul>");
+        }
+        
+        // just to help us analyze what we got as data form the worker
+        console.log ("msg we got back: "+ JSON.stringify(e));
+      }, false);  
+      worker.onerroror = function(e){
+        throw new erroror(e.message + " (" + e.filename + ":" + e.lineno + ")");
+      };
+		
+   
+    // post a message to the web worker  
+    console.log("Calling the worker with @greenido as user");
+       */
+      // when the DOM is ready
+     
+      //
+      // Pull Tweets and save only the new ones.
+      // @author Ido Green
+      // @date   12/1/2011
+      
+      var updateDelay = 60000; // = 1min delay
+      var user = 'greenido';
+
+      function getURL(user) {
+        return 'http://twitter.com/statuses/user_timeline/' + user
+          + '.json';
+      }
+ 
+      function readTweets() {
+        try {
+          var urlT = getURL(user);
+          console.log("Worker: Attempting To Read Tweets for user - " + user +
+            " from: "+ urlT);
+          $.getJSON("greenido.json", function(data) {
+            var numTweets = data.length;	
+            if (numTweets > 0) {
+              for (var j = 0; j < numTweets; j++) {
+                var curT = getTweet(data[j].id_str);
+                if ( curT === null ) {
+                  saveTweets(data[j]); // save it because it's a new tweet
+                }
+              }
+              console.log("Worker: New Tweets - " +  numTweets);
+              console.log(data);
+            } else {
+              console.log("Worker: New Tweets - 0");
+            }
+            setTimeout(readTweets, updateDelay);
+            
+          });
+          //importScripts(url);
+        }
+        catch (e) {
+          console.error("Worker: erroror - " + e.message);
+          setTimeout(readTweets, updateDelay); // lets do it every 2min
+        }
+      }
+
+     
+      
+      
+      function saveTweets(tweet) {
+        localStorage.setItem(tweet.id_str, "{"+ 
+          "'created':" + tweet.created_at + 
+          "'tweet-text':" + tweet.text +
+          "}");
+      }
+      function getTweet(tweetID) {
+        return localStorage.getItem(tweetID);
+      }
+      //
+      //
+      $(function() {
+        console.log("-- started the main page --");
+        readTweets();
+
+        //====
+      });
+      
+
+    </script>
+  </body>
+</html>
